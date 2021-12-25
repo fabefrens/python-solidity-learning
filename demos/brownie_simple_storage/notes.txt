@@ -1,0 +1,20 @@
+1. Run brownie init to create the folder structure
+2. Crear contracts
+3. Run brownie compile, compiles the contracts
+4. Run brownie run  path/file to run scripts
+5. Just running brownie will show all the commands
+
+Tests:
+brownie test -k nombre_funcion -- testea solo una function
+brownie test -pdb para la ejecución en modo debug donde haya un fallo
+brownie test -s -- más verbose
+
+Deploy to testnet
+En vez de usar un HTTP provider como Infura, Brownie viene ya con una lista de networks
+brownie networks list
+Copiamos el Project ID de Infura en el .env
+Podríamos hacer brownie run scripts/deploy.py --network rinkeby
+
+
+Brownie console
+brownie console -> this creates a console with all our contracts already imported

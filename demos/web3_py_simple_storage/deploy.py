@@ -2,6 +2,7 @@ from solcx import compile_standard, install_solc
 import json
 from web3 import Web3
 import os
+from web3.middleware import geth_poa_middleware
 
 with open("./SimpleStorage.sol", "r") as file:
     simple_storage_file = file.read()
@@ -46,8 +47,9 @@ abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
 w3 = Web3(
     Web3.HTTPProvider("https://rinkeby.infura.io/v3/8f96b39155ab414dad408731882ab569")
 )
+w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 chain_id = 4
-my_address = "0xC591AD25A784a3de3f9dDba66b8a4F4d1d14d8e9"
+my_address = "0xd28000A545e8838Bc50bCb74c22ab3C1E4beAB68"
 private_key = os.getenv("PRIVATE_KEY")
 
 # Create the contract in Python

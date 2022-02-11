@@ -1,0 +1,4 @@
+brownie init
+If we try to compile, error because Brownie cannot read from mdm.
+However it can read from github, we create the brownie-config.yaml
+We go to chainlink-brownie-contracts

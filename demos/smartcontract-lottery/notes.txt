@@ -1,0 +1,80 @@
+# Para el price feed
+Usamos AggregatorV3Intervace, que es el price feed de Chainlink
+
+# Mainnet fork
+Borrar mainnet-fork
+brownie networks add development mainnet-fork cmd=ganache-cli host=http://127.0.0.1 fork=https://eth-mainnet.alchemyapi.io/v2/6iMddzvy0CaQgjUGNLjQ4_QTwrMZfuXE accounts=10 mnemonic=brownie port=8545
+
+# Testeo rápido
+Programamos un test básico. Calculamos a mano lo que debería dar el min entrance fee
+Ponemos una condición de > y < que boundaries y chequeamos.
+
+# Evitar que se interactúe antes o después de que empiece/termine la lotería
+Enums - User-defined types. Es como un struct pero son convertibles a interactúe
+Ver la docu de Solidity
+Creamos un enum LOTTERY_STATE con los estados de la lotería, que se convierten a int
+
+# Para que solo el admin pueda crear y cerrar
+Open zeppelin para el onlyowner, buscamos el Ownable y lo copiamos
+
+# Random numbers
+1. Pseudo-random -- MUY INSEGURO, NO USAR
+Se cogen globally available variables (e.g. sender, msg.value, block difficulty, etc.) y se hashea
+
+2. Provable way to get a random numbers (Red Kovan)
+We need to look outside the blockchain
+Chainlink VRF (verifiable randomness function) es la funcionalidad
+We go to the Chainlink docs (https://docs.chain.link/docs/get-a-random-number/) and test the deploy to remix
+Vemos que tiene inheritance de VRFConsumerBase.sol. Lo exploramos en github.
+Detalle técnico, como hay  inheritance en RandomNumberConsumer.sol, hay doble constructor. Fijarse en la sintaxis de cómo llamarlos
+Al VRFConsumerBase le pasamos el address del nodo que coordina la randomness y el LINK (token) fee que le pagaremos
+Nota: en ETH pagamos ETH gas por transacción. En Chainlink pagamos LINK gas
+En el feed de precios, no pagamos porque hay sponsors que ya lo han pagado
+En VRFConsumerBase vemos que hay que pasarle el keyhash y el fee. El keyhash es el nodo
+Desplegamos RandomNumberconsumer.sol en Kovan
+Si intentamos pedir un número random, peta por falta de gas fees. Necesitamos hacer funding al contrato con Link para que tire de ese gas
+Enviamos 1 link a mano a la address donde hemos desplegado el contrato
+Cuando tengamos eso, le damos a la función de generar random number. Aún no podremos verlo
+El motivo es que esto funciona en modo request & receive data. La primera transacción que hemos hecho es el request. Hay que esperar un rato para que el Oracle nos lo envíe
+En este caso la función es fulfillRandomness. Volvemos a brownie
+
+En nuestro contrato, hacemos inheritance de VRFConsumerBase y lo metemos en el constructor con la sintaxis adecuada
+Tenemos que pasarle los argumentos del constructor (_vrfCoordinator, _link)
+We also need to include fee (amount of token) and keyhash (way to uniquely identify the Chainlink VRF node)
+
+# Testing
+We start with deploy_lottery.py
+We change get_account so we can use account[X] or account.load si tenemos cuentas guardadas en Brownie local
+To deploy the contract we need to parameterize everything depending on which chain we're in
+address _priceFeedAddress:
+    If we're on a live chain (e.g. Rinkeby), we will need to put the address of the contract in the config
+    If we're not, we need to deploy a Mock
+We are going to put all of this mocking/checking in a function get_contract in helpful_scripts
+We use Contract.from_abi
+
+CREATE MOCKS
+To import the contract Mocks and Contract Types, we go to chainlink-mix o a chainlink github/contracts/0.6/tests/buscar mocks, copiamos el código y lo pegamos en un archivo nuevo en contracts/test
+lottery needs:
+    address _priceFeedAddress, -- vamos a Chainlink docs, vamos a USING RANDOMNESS y buscamos en Contract Addresses ETH price feeds en Rinkeby
+    address _vrfCoordinator,-- vamos a Chainlink docs, vamos a USING RANDOMNESS y buscamos en Contract Addresses VRF Coordinator en Rinkeby
+    address _link, This is another SC. vamos a Chainlink docs, LINK Token Contracts/Rinkeby y copiamos
+    uint256 _fee, bytes32 _keyhash -- They're a number, not a SC. In our config, in development we set default values. We select the same ones as Rinkeby. 
+    To get the Rinkeby values of _fee and _keyhash, we go to chainlink docs, RANDOMNESS/Contract addresses/Rinkeby copiar keyhash y fee (0.1 LINK in WEI)
+
+Interfaces: we can use interfaces to interact with our contracts
+To do so, we go to chainlink-mix/interfaces, copy the LinkTokenInterface y lo pegamos en un nuevo archivo en interfaces/LinkTokenInterface.sol
+
+# Testing
+When we run the whole thing, we get 0x000... as winner because in our local Ganache, there is no Chainlink node that gives us the randomness
+We start now testing.
+
+INTEGRATION VS UNIT TESTS
+Unit test - Small pieces/individual functions (we want to test every single line of code)
+Integrations - Accross multiple pieces of code
+We create a folder for each type usually. For this demo we don't. We rename the current file to ..._unit and create another one with ..._integration
+
+
+
+
+
+

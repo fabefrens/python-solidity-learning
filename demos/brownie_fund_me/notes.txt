@@ -1,4 +1,52 @@
 brownie init
-If we try to compile, error because Brownie cannot read from mdm.
+If we try to compile, error because Brownie cannot read from mdm (package directory).
 However it can read from github, we create the brownie-config.yaml
 We go to chainlink-brownie-contracts
+
+Para lanzar:
+brownie run path/to/deploy.py --network rinkeby
+
+
+Para verificar contratos:
+Se puede hacer manualmente, pero lo mejor es crearse cuenta en Etherscan, ir a Profile/API-KEYs y
+crear una API para hacer la verificación de forma programática
+
+Para poder trabajar con ganache local y los oracles:
+1. Mocking - Desplegar fake smart contracts para simular los reales
+En contracts, creamos la folder de test, donde meteremos los mocks
+Creamos MockV3Aggregator.sol y vamos a smartcontractkit / chainlink-mix (github)
+
+# Adding new network:
+brownie networks list
+browneie networks add Ethereum(or development/whatever) ganache-local host=http://IP del Ganache chainid=Chain ID de Ganache
+Ahorra corremos el script con --network ganache-local
+Si queremos borrar el pasado, vamos a build/deployments/ID del Ganache y lo borramos y en map.json
+borramos las interacciones de ese blockchain
+
+# File to interact with our contracts
+scripts/
+
+# Para que no testeemos en la red persistente, sino en redes de test:
+Installar pytest  y poner pytest.skip()
+
+# 2. FORKING
+Es copiar un blockchain y lo trae a local para interactuar con él
+Creamos otra red en el YAML que sea igual que rinkeby. y la llamamos mainnet-fork-dev. 
+Cambiamos la address del price feed por la del ETH mainnet (en la página de chainlink)
+brownie networks add development mainnet-fork-dev cmd=ganache-cli host=http://127.0.0.1 fork='https://mainnet.infura.io/v3/$WEB3_INFURA_PROJECT_ID' accounts=10 mnemonic=brownie port=8545
+Podemos hacer forking con Infura, pero da problemas. La alternativa es Alchemy. Vamos, creamos proyecto y copiamos la ID http. Cambiamos
+brownie networks add development mainnet-fork-dev cmd=ganache-cli host=http://127.0.0.1 fork='https://eth-mainnet.alchemyapi.io/v2/r7zytg3B6LuhLDckyWLHoAwC3yW9LGk1' accounts=10 mnemonic=brownie port=8545
+
+# Criterios de test:
+SIEMPRE SIEMPRE:
+1. Local ganache con mocks
+2. Testnet (integrations tests)
+
+MUY RECOMENDABLE
+3. Brownie mainnet-fork
+4. Customer mainnet-fork
+
+Opcional:
+5. Self/Local Ganache (good for tinkering)
+
+

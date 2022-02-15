@@ -73,6 +73,15 @@ Unit test - Small pieces/individual functions (we want to test every single line
 Integrations - Accross multiple pieces of code
 We create a folder for each type usually. For this demo we don't. We rename the current file to ..._unit and create another one with ..._integration
 
+Testing fulfillRandomness
+Cuando llamamos a randomness con el VRFCoordinator, este tiene una función que es callBackWithRandomness, que es la que acaba llamando a nuestro fulfillRandomness
+Nuestro fulfillRandomness recibirá como parámetros de entrada del VRFCoordinator el requestID y el número random (randomness)
+endLottery (quien pide la randomness) no return nada. 
+Para poder ver cuándo endLottery cambia el estado, usamos emitting an event. Events are data on the blockchain but not accessible by any Smart Contract.
+Son como los "logs" o "printlines" del blockchain (En Etherscan se pueden ver, donde pone Events cerca de Contract o en los Logs)
+Para crear un evento, lo declaramos "event RequestedRandomness(.....) arriba en la zona de declaraciones y hacemos un emit al final de endLottery
+Ahora en el test, cuando llamamos a endLottery, podemos acceder al interior del event y ver transactionId
+Hacemos esto
 
 
 

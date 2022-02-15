@@ -19,6 +19,7 @@ contract Lottery is VRFConsumerBase, Ownable {
     LOTTERY_STATE public lottery_state;
     uint256 public fee;
     bytes32 keyhash;
+    event RequestedRandomness(bytes32 requestId); // Declared new type of event called RequestedRandomness
 
     // OPEN = 0
     // CLOSED = 1
@@ -82,6 +83,9 @@ contract Lottery is VRFConsumerBase, Ownable {
 
         // Built-in function in VRFConsumerBase for the receive part
         // We do it in another transaction fulfillRandomness
+
+        // On a different note, we add the event here
+        emit RequestedRandomness(requestId);
     }
 
     // It is internal because it will be run by the VRFCoordinator, who is the only one who should be able to run this

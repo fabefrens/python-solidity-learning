@@ -81,7 +81,10 @@ Para poder ver cuándo endLottery cambia el estado, usamos emitting an event. Ev
 Son como los "logs" o "printlines" del blockchain (En Etherscan se pueden ver, donde pone Events cerca de Contract o en los Logs)
 Para crear un evento, lo declaramos "event RequestedRandomness(.....) arriba en la zona de declaraciones y hacemos un emit al final de endLottery
 Ahora en el test, cuando llamamos a endLottery, podemos acceder al interior del event y ver transactionId
-Hacemos esto
+Hacemos esto para poder testear la función de callBackWithRandomness del VRFCoordinator, haciéndonos pasar por él
+
+INTEGRATION TESTS
+We create a similar test than the latest one but only for the live network and without mocking the VRFCoordinator node, because this time it will be a real one
 
 
 

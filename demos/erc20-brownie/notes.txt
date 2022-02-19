@@ -1,0 +1,2 @@
+We start with brownie init
+we go to openzeppelin/contracts y buscamos el código de ejemplo de ERC20

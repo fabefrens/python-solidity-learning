@@ -5,6 +5,6 @@ When we deposit ETH, Aave is swapping it for WETH (an ERC20 version of ETH)
 # Mint WETH in exchange for ETH
 We look at the WETH contract in Kovan Etherscan to look at the functions
 We need our scripts to call and interact with this Smart Contract. For this we need
-    - ABI
-    - Address
-We will do it via interfaces. We copy them from the github repo of Patrick (could not find it anywhere else)
+    - ABI - We will do it via interfaces. We copy them from the github repo of Patrick (could not find it anywhere else)
+    - Address - We look for it in Kovan Etherscan
+We don't use get_contract() for simplicity because we will only use kovan or mainnet-fork

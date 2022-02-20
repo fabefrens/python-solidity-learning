@@ -8,3 +8,14 @@ We need our scripts to call and interact with this Smart Contract. For this we n
     - ABI - We will do it via interfaces. We copy them from the github repo of Patrick (could not find it anywhere else)
     - Address - We look for it in Kovan Etherscan
 We don't use get_contract() for simplicity because we will only use kovan or mainnet-fork
+
+# Deposit in Aave
+Go to docs.aave.com/LendingPool
+LendingPool is the contract that is used to lend & borrow and has all the necessary options
+AddressProvider es el contract que nos da la address del LendingPool, porque pueden cambiar. Según el mercado/versión de Aave que queramos, buscamos en la docu
+Para encontrar el address, nos vamos a la docu y en la sección de Deployed Contracts buscamos el LendingPoolAddressesProvider
+Cuando traemos la interfaz de ILendingPool (ojo, estamos con Aave V2), hay que cambiar para que los imports los haga desde github y no desde local
+NOTA: ERC20 tokens have an approve functions that needs to be called before sending such tokens
+Para depositar, vemos los parámetros de la función deposit en la docu. NOTA: referralcode está deprecated, pasamos un 0
+
+# Borrow from Aave

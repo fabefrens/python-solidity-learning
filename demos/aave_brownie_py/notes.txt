@@ -19,3 +19,5 @@ NOTA: ERC20 tokens have an approve functions that needs to be called before send
 Para depositar, vemos los parámetros de la función deposit en la docu. NOTA: referralcode está deprecated, pasamos un 0
 
 # Borrow from Aave
+We look at the getUserAccountData function in the aave doc
+NOTE: for all addresses in Kovan in Aave, look at the docu in deployed contracts because they change
